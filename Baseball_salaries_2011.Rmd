@@ -1,0 +1,138 @@
+---
+title: "Baseball_Salaries_2011"
+author: "ARIJIT DUTTA"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r , include=T,echo=T}
+library(tidyverse)
+library(readxl)
+options(scipen = 999)
+```
+
+Our analysis revolves around the  baseball player's salaries for the season 2010-2011 from MLB. We will be  focusing mainly,on the variable 'salary' form the data set 'Baseball Salaries 2011.xlsx' and try to find out the descriptive statistics of the said variable. Let's get started.
+
+We have started our analysis by importing two of the most used packages in R : namely **tidyverse** and **readxl**. The tidyverse package is very much useful for data wrangling i.e., for slicing & dicing data sets to extract most useful insights. The readxl package is used for importing excel files to the R studio. I have also used "options(scipen = 999)" to format the output in numerical form , as R outputs numerical results in exponential form, which is sometimes difficult to interpret.
+
+Next , I have called the 'glimpse()' function to find out the basic structure of the dataset. It
+
+
+
+
+```{r , echo=TRUE}
+baseball_salaries_2011 <- read_excel('~/Desktop/DataSets/Albright/Chapter-02/Example Files/Baseball Salaries 2011.xlsx',sheet = 'Salaries 2011')
+
+glimpse(baseball_salaries_2011)
+
+head(baseball_salaries_2011,n=3)
+
+
+
+```
+```{r incluse = T}
+mean_salary <- mean(baseball_salaries_2011$Salary)
+mean_salary
+
+```
+
+
+
+
+
+```{r , include=TRUE}
+median_salary <- median(baseball_salaries_2011$Salary)
+median_salary
+```
+
+
+
+```{r, include=TRUE}
+maximum_salary <- max(baseball_salaries_2011$Salary)
+maximum_salary
+
+```
+
+```{r, include=TRUE}
+
+minimum_salary<- min(baseball_salaries_2011$Salary)
+minimum_salary
+
+
+```
+
+
+```{r,include=TRUE}
+var_salary <- var(baseball_salaries_2011$Salary)
+var_salary
+
+```
+
+
+```{r, include=TRUE}
+
+q1 <- quantile(baseball_salaries_2011$Salary, 0.25)
+q1
+
+```
+
+```{r,include=TRUE}
+q3 <- quantile(baseball_salaries_2011$Salary, 0.75)
+q3
+
+```
+
+```{r,include=TRUE}
+iqr <- q3 - q1
+iqr
+
+```
+
+
+```{r}
+
+lower <- q1 - 1.5 * iqr
+upper <- q3 + 1.5 * iqr
+
+outliers_salary <- baseball_salaries_2011 %>%
+  filter(Salary< lower | Salary > upper)
+outliers_salary
+
+```
+
+
+```{r}
+baseball_salaries_2011 %>%
+  group_by(Position) %>%
+  summarise(Average_Salary = mean(Salary)) %>%
+  arrange(desc(Average_Salary))
+```
+
+
+```{r}
+baseball_salaries_2011 %>%
+  group_by(Team) %>%
+  summarise(Average_Salary = mean(Salary)) %>%
+  slice_max(Average_Salary,n=5)
+```
+
+
+```{r}
+baseball_salaries_2011 %>%
+  group_by(Team) %>%
+  filter(Position=='Designated Hitter') %>%
+  summarise(Average_Salary = mean(Salary)) %>%
+  arrange(desc(Average_Salary))
+
+```
+
